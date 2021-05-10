@@ -22,42 +22,34 @@ function MainPage() {
 
   return (
     <div>
-      <div id="header">
-        <div id="header-area">
-          <img src="/images/icons/logo.png" />
-        </div>
+      <div id="banner">
+        <img src="/images/banners/banner1.png" />
       </div>
-      <div id="body">
-        <div id="banner">
-          <img src="/images/banners/banner1.png" />
-        </div>
-        <h1>판매되는 상품들</h1>
-        <div id="product-list">
-          {products.map(function (product, index) {
-            return (
-              <div className="product-card">
-                <Link className="product-link" to={`/products/${index}`}>
-                  <div>
-                    <img className="product-img" src={product.imageUrl} />
+      <h1>판매되는 상품들</h1>
+      <div id="product-list">
+        {products.map(function (product, index) {
+          return (
+            <div className="product-card">
+              <Link className="product-link" to={`/products/${product.id}`}>
+                <div>
+                  <img className="product-img" src={product.imageUrl} />
+                </div>
+                <div classNmame="product-contents">
+                  <span classNmame="product-name">{product.name}</span>
+                  <span classNmame="product-price">{product.price}원</span>
+                  <div classNmame="product-seller">
+                    <img
+                      className="product-avatar"
+                      src="images/icons/avatar.png"
+                    />
+                    <span>{product.seller}</span>
                   </div>
-                  <div classNmame="product-contents">
-                    <span classNmame="product-name">{product.name}</span>
-                    <span classNmame="product-price">{product.price}원</span>
-                    <div classNmame="product-seller">
-                      <img
-                        className="product-avatar"
-                        src="images/icons/avatar.png"
-                      />
-                      <span>{product.seller}</span>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            );
-          })}
-        </div>
+                </div>
+              </Link>
+            </div>
+          );
+        })}
       </div>
-      <div id="footer"></div>
     </div>
   );
 }
