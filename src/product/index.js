@@ -2,30 +2,49 @@ import "./index.css"; /* css는 from을 쓰지 않는다.*/
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { API_URL } from "../config/constants.js";
+import dayjs from "dayjs";
+import { Button, message } from "antd";
 
 function ProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  useEffect(function () {
+
+  const getProduct = () => {
     axios
-      .get(
-        `https://6b1e526a-0f64-46cc-a228-7dc8cbe9ac93.mock.pstmn.io/products/${id}`
-      )
+      .get(`${API_URL}/products/${id}`)
       .then(function (result) {
-        setProduct(result.data);
+        setProduct(result.data.product);
       })
       .catch(function (error) {
         console.error(error);
       });
+  };
+
+  useEffect(function () {
+    getProduct();
   }, []);
+
   if (product === null) {
     return <h1>상품 정보를 받고 있습니다....</h1>;
   }
 
+  const onClickPurchase = () => {
+    axios
+      .post(`${API_URL}/purchase/${id}`)
+      .then((resut) => {
+        message.info("구매가 완료되었습니다.");
+        getProduct();
+      })
+      .catch((error) => {
+        message.error(`에러가 발생했습니다. ${error.message}`);
+      });
+  };
+
   return (
     <div>
       <div id="image-box">
-        <img src={"/" + product.imageUrl} />
+        <img src={`${API_URL}/${product.imageUrl}`} />
       </div>
       <div id="profile-box">
         <img src="/images/icons/avatar.png" />
@@ -34,8 +53,20 @@ function ProductPage() {
       <div id="contents-box">
         <div id="name">{product.name}</div>
         <div id="price">{product.price}원</div>
-        <div id="createdAt">2020년 12월 8일</div>
-        <div id="description">{product.description}</div>
+        <div id="createdAt">
+          {dayjs(product.createdAt).format("YYYY-MM-DD")}
+        </div>
+        <Button
+          id="purchase-button"
+          size="large"
+          type="primary"
+          danger
+          onClick={onClickPurchase}
+          disabled={product.soldout === 1}
+        >
+          재빨리 구매하기
+        </Button>
+        <pre id="description">{product.description}</pre>
       </div>
     </div>
   );
